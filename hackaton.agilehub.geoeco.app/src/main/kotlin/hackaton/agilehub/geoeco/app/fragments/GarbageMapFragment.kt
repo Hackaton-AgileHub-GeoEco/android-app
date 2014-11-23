@@ -15,6 +15,9 @@ import org.osmdroid.views.overlay.OverlayItem
 import android.view.MotionEvent
 import android.view.GestureDetector
 import android.widget.Toast
+import android.content.Context
+import org.osmdroid.views.overlay.Overlay
+import android.graphics.Canvas
 
 class GarbageMapFragment : Fragment() {
 
@@ -23,7 +26,7 @@ class GarbageMapFragment : Fragment() {
     private val osmPins = ArrayList<OverlayItem>()
 
     private val osmMapViewGestureListener = object : GestureDetector.SimpleOnGestureListener() {
-        override fun onDown(motionEvent: MotionEvent): Boolean {
+        override fun onDown(e: MotionEvent): Boolean {
             return true
         }
 
@@ -53,19 +56,6 @@ class GarbageMapFragment : Fragment() {
         super<Fragment>.onViewCreated(view, savedInstanceState)
 
         this.initializeOsmMapView()
-        this.initializeOsmMapViewEventHandlers()
-    }
-
-    private fun initializeOsmMapViewEventHandlers() {
-        this.osmMapView.setOnTouchListener {
-            (source, motionEvent) ->
-            this.onOsmMapView_Touch(source,
-                                    motionEvent)
-        }
-    }
-
-    private fun onOsmMapView_Touch(source: View, motionEvent: MotionEvent): Boolean {
-        return this.osmMapViewGestureDetector.onTouchEvent(motionEvent)
     }
 
     private fun initializeOsmMapView() {
@@ -78,12 +68,27 @@ class GarbageMapFragment : Fragment() {
 
         this.osmMapView.setBuiltInZoomControls(true)
         this.osmMapView.setMultiTouchControls(true)
+        this.osmMapView.getOverlays().add(MapOverlay(this.getActivity()))
 
         val osmMapController = this.osmMapView.getController()
-        osmMapController.setZoom(6)
+        osmMapController.setZoom(12)
 
         [suppress("CAST_NEVER_SUCCEEDS")]
         osmMapController.setCenter(GeoPoint(latitude.getFloat().toDouble(),
                                             longitude.getFloat().toDouble()))
+    }
+
+    inner class MapOverlay(context: Context) : Overlay(context) {
+        override fun draw(c: Canvas?, osmv: MapView?, shadow: Boolean) {
+            // Do Nothing
+        }
+
+        override fun onTouchEvent(event: MotionEvent?, mapView: MapView?): Boolean {
+            this@GarbageMapFragment
+                .osmMapViewGestureDetector
+                .onTouchEvent(event)
+
+            return false
+        }
     }
 }
