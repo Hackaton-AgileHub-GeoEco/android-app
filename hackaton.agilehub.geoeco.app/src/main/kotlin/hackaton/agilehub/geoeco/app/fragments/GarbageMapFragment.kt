@@ -18,6 +18,8 @@ import android.widget.Toast
 import android.content.Context
 import org.osmdroid.views.overlay.Overlay
 import android.graphics.Canvas
+import org.osmdroid.DefaultResourceProxyImpl
+import org.osmdroid.views.overlay.ItemizedIconOverlay
 
 class GarbageMapFragment : Fragment() {
 
@@ -35,12 +37,22 @@ class GarbageMapFragment : Fragment() {
                 .osmMapView
                 .getProjection()
 
-            val newLocation = osmProjection.fromPixels(motionEvent.getX().toInt(),
-                                                       motionEvent.getY().toInt())
+            val longPressLocation = osmProjection.fromPixels(motionEvent.getX().toInt(),
+                                                             motionEvent.getY().toInt())
 
-            Toast.makeText(this@GarbageMapFragment.getActivity(),
-                           "Lat: ${newLocation.getLatitude()} and Long: ${newLocation.getLongitude()}",
-                           Toast.LENGTH_SHORT).show()
+            val resourceProxy = DefaultResourceProxyImpl(this@GarbageMapFragment.getActivity())
+            val overlays = ArrayList<OverlayItem>()
+
+            overlays.add(OverlayItem("New Overlay",
+                                     "Overlay Description",
+                                     longPressLocation as GeoPoint));
+
+            this@GarbageMapFragment.osmMapView
+                .getOverlays()
+                .add(ItemizedIconOverlay(overlays, null, resourceProxy))
+
+            this@GarbageMapFragment.osmMapView
+                .invalidate()
         }
     }
 
