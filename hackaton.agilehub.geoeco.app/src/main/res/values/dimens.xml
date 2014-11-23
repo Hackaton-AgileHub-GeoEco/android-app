@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <item name="main_city_latitude" format="float" type="dimen">45.6556</item>
+    <item name="main_city_longitude" format="float" type="dimen">25.6036</item>
+
+</resources>
