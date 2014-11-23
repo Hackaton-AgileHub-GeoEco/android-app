@@ -1,0 +1,10 @@
+# Gradle stuff
+/build
+.gradle/
+
+# IDEA stuff
+/.idea
+*.iml
+
+# Local properties file
+local.properties
